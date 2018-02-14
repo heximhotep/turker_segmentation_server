@@ -1,8 +1,6 @@
 
-
-
-
 var express = require('express');
+var path = require('path');
 var fs = require('fs');
 var cors = require('cors');
 var app = express();
@@ -40,17 +38,18 @@ app.use(bodyParser.urlencoded({extended:false, limit:'50mb'}));
 app.use(bodyParser.json({limit: '50mb'}));
 app.set('port', (process.env.PORT || 42069));
 
+app.use(express.static(path.join(__dirname, 'static')));
+
 var getClientAddress = function (req) {
         return (req.headers['x-forwarded-for'] || '').split(',')[0] 
         || req.connection.remoteAddress;
 };
 
-app.use(express.static(__dirname + '/public'));
 
 // views is directory for all template files
-app.set('views', __dirname + '/views');
+console.log("dirname is: " + __dirname);
+app.set('views', path.join(__dirname, 'views'));
 app.set('view engine', 'ejs');
-app.use(express.static(__dirname + '/static'));
 
 app.get('/', function(req, res) {
   res.render('index');
@@ -96,6 +95,9 @@ app.post('/send_message', send_message);
 
 app.post('/get_key', get_key);
 
-app.listen(app.get('port'), function() {
+var http = require('http').Server(app);
+//var io = require('socket.io')(http);
+
+http.listen(app.get('port'), function() {
   console.log('Node app is running on port', app.get('port'));
 });
