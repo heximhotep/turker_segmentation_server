@@ -12,6 +12,10 @@ var allowCrossDomain = function(req, res, next) {
     next();
 };
 
+const imgfolder = 'static/images';
+
+var lines = []; 
+fs.readdirSync(imgfolder).forEach(file => {lines.push(file)});
 function makeid() 
 {
   var text = "";
@@ -74,12 +78,12 @@ function send_message(req, res)
     fileBody += req.body.width + " ";
     fileBody += req.body.height + " ";
     fileBody += req.body.enc;
-    fs.writeFile("output_image_" + indexIndices + "_" + thisIndex + ".santorum",
+    fs.writeFile("output/" + indexIndices + "_" + thisIndex + ".x",
                  fileBody, 
                  (err) => {if(err) throw err;}
                 );
     console.log('saved file');
-    response = {body:"ok dude"};
+    response = {body:"bagel"};
     res.end(JSON.stringify(response));
 }
 
