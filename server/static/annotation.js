@@ -3,11 +3,9 @@ const numDogs = 26;
 const sendMessagePath = "http://52.91.59.168:42069/send_message";
 const getKeyPath = "http://52.91.59.168:42069/get_key";
 
-var imgURLs = [];
-for(var i = 0; i < numDogs; i++)
-{
-  imgURLs.push("images/dog" + i + ".png");
-}
+
+
+var imgURLs;
 var isFinished;
 
 var usedImgs = [];
@@ -60,7 +58,7 @@ function loadReferenceImgs()
 
 function preload()
 {
-  loadReferenceImgs();
+  imgURLs = loadStrings("filenames.santorum", loadReferenceImgs);
 }
 
 function mousePressed()
