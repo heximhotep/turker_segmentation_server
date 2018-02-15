@@ -16,6 +16,11 @@ const imgfolder = 'static/images';
 
 var lines = []; 
 fs.readdirSync(imgfolder).forEach(file => {lines.push(file)});
+
+var fileList = fs.createWriteStream('static/filenames.santorum');
+lines.forEach(function(fname) {fileList.write(fname + '\n');});
+fileList.end();
+
 function makeid() 
 {
   var text = "";
