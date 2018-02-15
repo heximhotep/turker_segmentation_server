@@ -49,7 +49,7 @@ function loadReferenceImgs()
       nuURL  = imgURLs[urlIdx];
     }
     while(usedImgs.includes(nuURL));
-    var nuImg = loadImage(nuURL);
+    var nuImg = loadImage('images/' + nuURL);
     usedImgs.push(nuURL);
     referenceImgs.push(nuImg);
     i++;
@@ -143,7 +143,7 @@ function sendImg()
 {
   if(isFinished) 
   	return;
-  var imgName = (curURL.split("/")[1]).split(".")[0];
+  var imgName = curURL.split(".")[0];
   var mapData = {width:curMap.width, height:curMap.height, urlIndex:imgName};
   curMap.loadPixels();
   var pixelEncoding = "";
