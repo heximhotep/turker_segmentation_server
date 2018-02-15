@@ -78,7 +78,7 @@ function send_message(req, res)
     fileBody += req.body.width + " ";
     fileBody += req.body.height + " ";
     fileBody += req.body.enc;
-    fs.writeFile("output/" + indexIndices + "_" + thisIndex + ".x",
+    fs.writeFile("output/" + indexIndices + "___" + thisIndex + ".x",
                  fileBody, 
                  (err) => {if(err) throw err;}
                 );
