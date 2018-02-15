@@ -13,7 +13,7 @@ var currentCount = 0;
 var countRequirement = 5;
 var urlIdx;
 
-var screenRes = [640, 480];
+var screenRes = [1024, 512];
 
 var promptText;
 var instructionsText;
@@ -107,6 +107,9 @@ function setup()
   curColor = color(255, 0, 0);
   myCanvas = createCanvas(screenRes[0] + 400, screenRes[1]);
 
+  curImg = referenceImgs[currentCount];
+  curURL = usedImgs[currentCount];
+
   curMap = createGraphics(screenRes[0], screenRes[1]);
   curMap.noStroke();
   curMap.pixelDensity(1);
@@ -133,8 +136,7 @@ function setup()
   );
   acceptButton.mousePressed(sendImg);
 
-  curImg = referenceImgs[currentCount];
-  curURL = usedImgs[currentCount];
+  
 }
 
 function sendImg()
@@ -175,8 +177,13 @@ function finishFn(result)
   else
   {
     currentCount++;
-    curMap.clear();
     curImg = referenceImgs[currentCount];
+    curMap.remove();
+    curMap = createGraphics(curImg.width, curImg.height)
+    curMap.noStroke();
+  	curMap.pixelDensity(1);
+  	curMap.fill(curColor);
+    curMap.clear();
     curURL = usedImgs[currentCount];
   }
 }
