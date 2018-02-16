@@ -121,11 +121,11 @@ function setup()
   BrushPreview.strokeWeight(0.5);
 
   resetButton = createButton('Reset');
-  resetButton.position(0, screenRes[1] + 5);
+  resetButton.position(screenRes[0], screenRes[1] + 2630 + 5);
   resetButton.size(65, 19);
 
   acceptButton = createButton('Accept');
-  acceptButton.position(75, screenRes[1] + 5);
+  acceptButton.position(screenRes[0] + 75, screenRes[1] + 2630 + 5);
   acceptButton.size(65, 19);
 
   resetButton.mousePressed(
