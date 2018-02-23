@@ -3,7 +3,7 @@ const numDogs = 26;
 const sendMessagePath = "http://52.91.59.168:42069/send_message";
 const getKeyPath = "http://52.91.59.168:42069/get_key";
 
-
+var gui;
 
 var imgURLs;
 var isFinished;
@@ -136,7 +136,10 @@ function setup()
   );
   acceptButton.mousePressed(sendImg);
 
-  
+  //sliderRange(0.5, 25);
+
+  gui = createGui('brush settings', screenRes[0], screenRes[1] + 2400 + 5);
+  gui.addGlobals('brushSize');
 }
 
 function sendImg()
