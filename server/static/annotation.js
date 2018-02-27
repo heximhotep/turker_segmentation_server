@@ -2,6 +2,8 @@ const numDogs = 26;
 
 const sendMessagePath = "http://52.91.59.168:42069/send_message";
 const getKeyPath = "http://52.91.59.168:42069/get_key";
+const features = ['body', 'eye', 'nose', 'mouth', 'genital']
+var currentFeature = 0;
 
 var gui;
 
@@ -10,10 +12,9 @@ var isFinished;
 
 var usedImgs = [];
 var currentCount = 0;
-var countRequirement = 5;
 var urlIdx;
 
-var screenRes = [1024, 512];
+var screenRes = [512, 512];
 
 var promptText;
 var instructionsText;
@@ -22,11 +23,12 @@ var referenceImgs;
 var curImg;
 var curMap;
 var BrushPreview;
-var acceptButton;
+var nextButton;
 var resetButton;
 var myCanvas;
 
 var brushSize;
+var brushErase = false;
 var maxBrushSize = 25;
 var minBrushSize = 0.5;
 var brushChangeRate = 2;
@@ -121,11 +123,11 @@ function setup()
   BrushPreview.strokeWeight(0.5);
 
   resetButton = createButton('Reset');
-  resetButton.position(screenRes[0], screenRes[1] + 2630 + 5);
+  resetButton.position(screenRes[0], screenRes[1] + 5);
   resetButton.size(65, 19);
 
   acceptButton = createButton('Accept');
-  acceptButton.position(screenRes[0] + 75, screenRes[1] + 2630 + 5);
+  acceptButton.position(screenRes[0] + 85, screenRes[1] + 5);
   acceptButton.size(65, 19);
 
   resetButton.mousePressed(
@@ -138,8 +140,8 @@ function setup()
 
   //sliderRange(0.5, 25);
 
-  gui = createGui('brush settings', screenRes[0], screenRes[1] + 2400 + 5);
-  gui.addGlobals('brushSize');
+  gui = createGui('brush settings', screenRes[0], 5);
+  gui.addGlobals('brushSize', 'brushErase');
 }
 
 function sendImg()
@@ -219,11 +221,7 @@ function drawInstructions()
 	fill(255);
 	var baseY = 25;
 	var lineOffset = 24;
-	text("r: change color to red", baseX, baseY);
-	text("t: change color to blue", baseX, baseY + lineOffset);
-	text("e: change color to erase", baseX, baseY + lineOffset * 2);
-	text("z: make brush smaller", baseX, baseY + lineOffset * 3);
-	text("x: make brush bigger", baseX, baseY + lineOffset * 4);
+	text("", baseX, baseY);
 }
 
 function draw()
