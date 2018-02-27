@@ -1,9 +1,9 @@
-const numDogs = 26;
+const countRequirement = 3;
 
 const sendMessagePath = "http://52.91.59.168:42069/send_message";
 const getKeyPath = "http://52.91.59.168:42069/get_key";
-const features = ['body', 'eye', 'nose', 'mouth', 'genital']
-var currentFeature = 0;
+
+var brushFeature = ['body', 'orifice', 'erase'];
 
 var gui;
 
@@ -14,6 +14,7 @@ var usedImgs = [];
 var currentCount = 0;
 var urlIdx;
 
+var instructionRes = [800, 640];
 var screenRes = [512, 512];
 
 var promptText;
@@ -28,12 +29,10 @@ var resetButton;
 var myCanvas;
 
 var brushSize;
-var brushErase = false;
 var maxBrushSize = 25;
 var minBrushSize = 0.5;
-var brushChangeRate = 2;
 
-var curColor;
+var brushColor;
 var curURL;
 
 var finalKey = "";
@@ -73,20 +72,20 @@ function mouseDragged()
   brushstroke();
 }
 
-function keyPressed()
+/*function keyPressed()
 {
   if(key == 'z' || key == 'Z')
     brushSize -= brushChangeRate;
   if(key == 'x' || key == 'X')
     brushSize += brushChangeRate;
   if(key == 'r' || key == 'R')
-    curColor = color(255, 0, 0);
+    brushColor = color(255, 0, 0);
   if(key == 'e' || key == 'E')
-    curColor = color(0);
+    brushColor = color(0);
   if(key == 't' || key == 'T')
-    curColor = color(0, 0, 255);
-  curMap.fill(curColor);
-}
+    brushColor = color(0, 0, 255);
+  curMap.fill(brushColor);
+}*/
 
 function brushstroke()
 {
@@ -106,7 +105,7 @@ function setup()
   pixelDensity(1);
   isFinished = false;
   brushSize = 15;
-  curColor = color(255, 0, 0);
+  brushColor = color(255, 0, 0);
   myCanvas = createCanvas(screenRes[0] + 400, screenRes[1]);
 
   curImg = referenceImgs[currentCount];
@@ -115,7 +114,7 @@ function setup()
   curMap = createGraphics(screenRes[0], screenRes[1]);
   curMap.noStroke();
   curMap.pixelDensity(1);
-  curMap.fill(curColor);
+  curMap.fill(brushColor);
 
   BrushPreview = createGraphics(screenRes[0], screenRes[1]);
   BrushPreview.noFill();
@@ -123,12 +122,12 @@ function setup()
   BrushPreview.strokeWeight(0.5);
 
   resetButton = createButton('Reset');
-  resetButton.position(screenRes[0], screenRes[1] + 5);
-  resetButton.size(65, 19);
+  resetButton.position(screenRes[0] + 15, instructionRes[1] + screenRes[1] - 35);
+  resetButton.size(145, 27);
 
-  acceptButton = createButton('Accept');
-  acceptButton.position(screenRes[0] + 85, screenRes[1] + 5);
-  acceptButton.size(65, 19);
+  acceptButton = createButton('Submit');
+  acceptButton.position(screenRes[0] + 180, instructionRes[1] + screenRes[1] - 35);
+  acceptButton.size(145, 27);
 
   resetButton.mousePressed(
     function()
@@ -140,8 +139,24 @@ function setup()
 
   //sliderRange(0.5, 25);
 
-  gui = createGui('brush settings', screenRes[0], 5);
-  gui.addGlobals('brushSize', 'brushErase');
+  gui = createGui('brush settings', screenRes[0] + 15, instructionRes[1] + 15);
+  gui.addGlobals('brushSize', 'brushErase', 'brushFeature');
+}
+
+function encodeMap()
+{
+  curMap.loadPixels();
+  var result = "";
+  for(var i = 0; i < curMap.height; i++)
+  {
+    for(var j = 0; j < curMap.width; j++)
+    {
+      var idx = i * curMap.width + j;
+      var thisVal = curMap.pixels[idx * 4];
+      result += " " + str(thisVal)
+    }
+  }
+  return
 }
 
 function sendImg()
@@ -187,7 +202,7 @@ function finishFn(result)
     curMap = createGraphics(curImg.width, curImg.height)
     curMap.noStroke();
   	curMap.pixelDensity(1);
-  	curMap.fill(curColor);
+  	curMap.fill(brushColor);
     curMap.clear();
     curURL = usedImgs[currentCount];
   }
@@ -228,6 +243,19 @@ function draw()
 {
   if(!isFinished)
   {
+    switch(brushFeature)
+    {
+      case('body'):
+        brushColor = color(255, 0, 0);
+        break;
+      case('orifice'):
+        brushColor = color(0, 0, 255);
+        break;
+      case('erase'):
+        brushColor = color(0);
+        break;
+    }
+    curMap.fill(brushColor);
   	background(0);
   	var imgW = Math.min(screenRes[0], curImg.width);
   	var imgH = Math.min(screenRes[1], curImg.height);
