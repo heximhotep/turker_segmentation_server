@@ -5,6 +5,7 @@ const getKeyPath = "http://52.91.59.168:42069/get_key";
 
 var brushFeature = ['body', 'orifice', 'erase'];
 
+var submissionLock;
 var gui;
 
 var imgURLs;
@@ -104,6 +105,7 @@ function setup()
   noCursor();
   pixelDensity(1);
   isFinished = false;
+  submissionLock = false;
   brushSize = 15;
   brushColor = color(255, 0, 0);
   myCanvas = createCanvas(screenRes[0] + 400, screenRes[1]);
@@ -161,8 +163,9 @@ function encodeMap()
 
 function sendImg()
 {
-  if(isFinished) 
+  if(isFinished || submissionLock) 
   	return;
+  submissionLock = true;
   var imgName = curURL.split(".")[0];
   var mapData = {width:curMap.width, height:curMap.height, urlIndex:imgName};
   curMap.loadPixels();
@@ -206,6 +209,7 @@ function finishFn(result)
     curMap.clear();
     curURL = usedImgs[currentCount];
   }
+  submissionLock = false;
 }
 
 function trueFinish()
@@ -262,8 +266,9 @@ function draw()
     image(curImg, 0, 0, imgW, imgH, 0, 0, imgW, imgH);
     blendMode(SCREEN);
     image(curMap, 0, 0);
-    blendMode(NORMAL);
+    blendMode(DIFFERENCE);
     drawBrushPreview();
+    blendMode(NORMAL);
   }
   else
   {
